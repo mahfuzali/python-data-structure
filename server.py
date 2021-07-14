@@ -1,4 +1,5 @@
-from os import name
+import random
+
 from sqlite3 import Connection as SQLite3Connection
 from datetime import datetime
 from sqlite3.dbapi2 import Binary
@@ -6,51 +7,20 @@ from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from flask import Flask, json, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-import linked_list
-import hash_table
-import queue
-import stack 
-import binary_search_tree
-import random
-
+from src.datastructure import linked_list
+from src.datastructure import hash_table
+from src.datastructure import queue
+from src.datastructure import stack 
+from src.datastructure import binary_search_tree
+from src.models import User, BlogPost, db, app
 # app
-app = Flask(__name__)
+# app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///sqlitedb.file"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = 0
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///sqlitedb.file"
+# app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = 0
 
-
-# models
-# configure sqlite3 to enforce foreign key contraints
-@event.listens_for(Engine, "connect")
-def _set_sqlite_pragma(dbapi_connection, connection_record):
-    if isinstance(dbapi_connection, SQLite3Connection):
-        cursor = dbapi_connection.cursor()
-        cursor.execute("PRAGMA foreign_keys=ON;")
-        cursor.close()
-
-
-db = SQLAlchemy(app)
-now = datetime.now()
-
-# models
-class User(db.Model):
-    __tablename__ = "user"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    email = db.Column(db.String(50))
-    address = db.Column(db.String(200))
-    phone = db.Column(db.String(50))
-    posts = db.relationship("BlogPost", cascade="all, delete")
-
-class BlogPost(db.Model):
-    __tablename__ = "blog_post"
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(50))
-    body = db.Column(db.String(200))
-    date = db.Column(db.Date)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-
+# db = SQLAlchemy(app)
+# now = datetime.now()
 
 
 # routes
@@ -149,7 +119,7 @@ def create_blog_post(user_id):
 
     ht.add_key_value("title", data["title"])
     ht.add_key_value("body", data["body"])
-    ht.add_key_value("date", now)
+    ht.add_key_value("date", datetime.now())
     ht.add_key_value("user_id", user_id)
 
     new_blog_post = BlogPost(

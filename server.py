@@ -12,6 +12,7 @@ from src.datastructure import hash_table
 from src.datastructure import queue
 from src.datastructure import stack 
 from src.datastructure import binary_search_tree
+from src.datastructure import min_heap
 from src.models import User, BlogPost, db, app
 # app
 # app = Flask(__name__)
@@ -204,6 +205,25 @@ def delete_last_10():
 
 
 
+@app.route("/user/min", methods=["GET"])
+def get_min_user():
+    users = User.query.all()
+    user_heap = min_heap.MinHeap()
+
+    keys = []
+    for user in users:
+        keys.append(user)
+    
+    user_heap.min_pq(keys)
+
+    min_user = user_heap.min()
+    return jsonify(            {
+                "id": min_user.id,
+                "name": min_user.name,
+                "email": min_user.email,
+                "address": min_user.address,
+                "phone": min_user.phone
+            }), 200
 
 if __name__ == "__main__":
     app.run(debug=True)

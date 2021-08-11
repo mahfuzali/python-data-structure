@@ -43,6 +43,27 @@ class User(db.Model):
     phone = db.Column(db.String(50))
     posts = db.relationship("BlogPost", cascade="all, delete")
 
+    def __eq__(self, other):
+        return ((self.email, self.name) == (other.email, other.name))
+
+    def __ne__(self, other):
+        return ((self.email, self.name) != (other.email, other.name))
+
+    def __lt__(self, other):
+        return ((self.email, self.name) < (other.email, other.name))
+
+    def __le__(self, other):
+        return ((self.email, self.name) <= (other.email, other.name))
+
+    def __gt__(self, other):
+        return ((self.email, self.name) > (other.email, other.name))
+
+    def __ge__(self, other):
+        return ((self.email, self.name) >= (other.email, other.name))
+
+    # def __repr__(self):
+    #     return "%s %s" % (self.name, self.email)
+
 class BlogPost(db.Model):
     __tablename__ = "blog_post"
     id = db.Column(db.Integer, primary_key=True)
